@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from perceptron import Perceptron
 from matplotlib.colors import ListedColormap
+from adaline import AdalineGD
 
 
 def plot_decision_regions(X, y, clasiifier, resolution=0.02):
@@ -49,12 +50,21 @@ def main():
 
     ppn = Perceptron(eta=0.1, n_iter=10)
     ppn.fit(X, y)
-    plt.plot(range(1, len(ppn.error_) + 1), ppn.error_, marker='o')
-    plt.xlabel('Epochs')
-    plt.ylabel("Actualisations")
-    plt.show()
 
     plot_decision_regions(X, y, clasiifier=ppn)
+    plt.xlabel('variance of Wavelet Transformed image')
+    plt.ylabel('entropy of image')
+    plt.legend(loc='upper left')
+    plt.show()
+
+    X_std = np.copy(X)
+    X_std[:, 0] = (X[:, 0] - X[:, 0].mean()) / X[:, 0].std()
+    X_std[:, 1] = (X[:, 1] - X[:, 1].mean()) / X[:, 1].std()
+
+    ada = AdalineGD(n_iter=10, eta=0.01)
+    ada.fit(X_std, y)
+    plot_decision_regions(X_std, y, clasiifier=ada)
+    plt.title('Adaline - gradient descent')
     plt.xlabel('variance of Wavelet Transformed image')
     plt.ylabel('entropy of image')
     plt.legend(loc='upper left')
